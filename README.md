@@ -292,3 +292,309 @@ User 1 ─── 产生 ─── N Login_Record
 ├── used_excerpt
 ├── rank_order
 └── 主键：qa_id + item_id
+
+
+
+
+五、当前已完成工作
+
+在上述设计基础上，目前项目已经完成了数据库脚本、政策爬虫、政策措施自动拆解和地区回填的第一版实现。
+
+1. 数据库脚本
+
+已在 `database/` 目录下建立 MySQL 8 数据库相关文件：
+
+```text
+database/
+├── migrations/
+│   └── 202605211200_initial_schema.sql
+├── seeds/
+│   └── 202605211210_seed_basic_reference_data.sql
+├── docs/
+│   └── data_dictionary.md
+└── README.md
+```
+
+其中：
+
+```text
+202605211200_initial_schema.sql
+```
+
+用于创建核心表，包括：
+
+```text
+policy_document
+policy_item
+document_item
+region
+item_region
+category
+app_user
+login_record
+qa_record
+qa_reference
+```
+
+```text
+202605211210_seed_basic_reference_data.sql
+```
+
+用于插入基础政策分类，以及中国、福建省、厦门市和厦门六个区的地区层级数据。
+
+
+2. 爬虫模块
+
+已新增 `crawler/` 目录，用于抓取官方政策数据：
+
+```text
+crawler/
+├── run.py
+├── requirements.txt
+├── .env.example
+├── crawler/
+│   ├── config.py
+│   ├── db.py
+│   ├── models.py
+│   ├── utils.py
+│   ├── extractors/
+│   │   ├── policy_item_extractor.py
+│   │   └── region_matcher.py
+│   ├── parsers/
+│   │   └── html_parser.py
+│   └── spiders/
+│       └── xiamen_hrss.py
+└── docs/
+    └── official_sources.md
+```
+
+目前已实现厦门市人力资源和社会保障局相关页面的爬取，包含：
+
+```text
+就业创业
+人才服务
+规范性文件
+其他政策文件
+通知公告
+入厦政策专题
+毕业生入厦政策指南
+优秀毕业生入厦政策
+```
+
+同时新增通用政务网站爬虫，已接入更多官方来源：
+
+```text
+福建省人力资源和社会保障厅
+厦门市人民政府门户网站
+集美区人民政府
+海沧区人民政府
+思明区人民政府
+湖里区人民政府
+```
+
+新增运行入口包括：
+
+```text
+fujian-hrss
+xiamen-gov
+district-gov
+official-sites
+```
+
+爬虫可以提取：
+
+```text
+政策标题
+政策文号
+发布部门
+发布层级
+发布日期
+来源链接
+政策正文
+政策摘要
+```
+
+并写入 `policy_document` 表。
+
+
+3. 政策措施自动拆解
+
+已实现规则版 `policy_item` 自动拆解功能。
+
+系统可以从 `policy_document.full_text` 中自动生成政策措施候选项，并写入：
+
+```text
+policy_item
+document_item
+```
+
+目前可抽取的字段包括：
+
+```text
+措施名称
+政策分类
+适用对象
+申请条件
+扶持内容
+补贴标准
+申请材料
+办理流程
+办理渠道
+关键词
+原文依据片段
+```
+
+说明：当前拆解方式是规则抽取，适合作为第一版结构化数据，正式用于用户展示前仍建议人工复核。
+
+
+3.1 AI 问答模块
+
+已新增 `ai/` 目录，用于后续接入大模型 API：
+
+```text
+ai/
+├── ask.py
+├── README.md
+└── ai/
+    ├── config.py
+    ├── retriever.py
+    ├── prompt_builder.py
+    ├── llm_client.py
+    └── qa_service.py
+```
+
+当前 AI 模块已支持：
+
+```text
+从 policy_item 检索相关政策措施
+构造带引用依据的 prompt
+预览检索结果和 prompt
+调用 OpenAI-compatible Chat Completions API
+```
+
+可先使用 dry-run 模式测试检索和提示词：
+
+```bash
+python ai/ask.py "我是应届毕业生，想在厦门创业，有什么补贴？" --dry-run --top-k 3
+```
+
+配置大模型 API Key 后，可直接调用模型生成回答。
+
+
+4. 地区适用关系回填
+
+已实现 `item_region` 自动回填。
+
+系统会根据政策措施名称、政策内容和发布层级，识别适用地区，例如：
+
+```text
+中国
+福建省
+厦门市
+思明区
+湖里区
+集美区
+海沧区
+同安区
+翔安区
+```
+
+并写入 `item_region` 表。
+
+
+5. 数据质量处理
+
+已实现疑似噪声政策措施识别。
+
+例如表头、培训机构名称、目录项等内容不会直接删除，而是标记为：
+
+```text
+review_noise
+```
+
+这样可以保留原始抽取结果，同时避免它们混入后续查询和地区匹配。
+
+
+6. 当前数据库状态
+
+截至当前测试，数据库中已有：
+
+```text
+policy_document = 5
+policy_item = 36
+document_item = 36
+item_region = 26
+```
+
+其中 `policy_item` 状态为：
+
+```text
+effective = 26
+review_noise = 10
+```
+
+
+7. 常用运行命令
+
+预览爬虫结果，不写入数据库：
+
+```bash
+python crawler/run.py --source xiamen-hrss --max-pages 1 --max-items 10 --relevant-only
+```
+
+边爬取政策原文，边拆解政策措施，并写入数据库：
+
+```bash
+python crawler/run.py --source xiamen-hrss --max-pages 1 --max-items 10 --relevant-only --extract-items --save
+```
+
+从已有 `policy_document` 中拆解 `policy_item`：
+
+```bash
+python crawler/run.py --extract-from-db --max-items 20 --save
+```
+
+识别并标记疑似噪声政策措施：
+
+```bash
+python crawler/run.py --review-noisy-items --max-items 100 --save
+```
+
+自动回填政策措施适用地区：
+
+```bash
+python crawler/run.py --backfill-regions --max-items 100 --save
+```
+
+
+8. 当前阶段总结
+
+目前系统已经完成：
+
+```text
+数据库设计
+数据库建表脚本
+基础分类和地区数据
+厦门人社局政策爬虫
+福建省人社厅政策爬虫
+厦门市政府门户政策爬虫
+厦门区级政府政策爬虫
+政策原文入库
+政策措施规则拆解
+政策文件-措施依据关系
+政策措施-地区适用关系
+疑似噪声数据标记
+AI 问答模块骨架
+```
+
+尚未完成：
+
+```text
+更多官方网站爬虫持续扩展
+更精细的政策措施抽取
+政策查询接口
+用户画像匹配
+AI 通俗解读效果优化
+问答记录与引用保存
+前端展示页面
+```

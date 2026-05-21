@@ -54,6 +54,24 @@
 | 教育部 | https://www.moe.gov.cn/ | 高校毕业生就业创业工作通知 | 偏高校和就业指导 |
 | 国家大学生就业服务平台 | https://www.ncss.cn/ | 就业政策、就业服务、创业服务 | 可作为毕业生服务补充 |
 
+## 当前已接入爬虫的新增来源
+
+除厦门人社局外，目前 `official_generic.py` 已接入：
+
+| 分组 | 来源 | URL |
+| --- | --- | --- |
+| `fujian-hrss` | 福建省人社厅-高校毕业生政策法规 JSON 数据 | https://rst.fujian.gov.cn/fw/kstd/bys/zcfg/dcdata.htm |
+| `fujian-hrss` | 福建省人社厅-毕业生就业创业问答 | https://rst.fujian.gov.cn/wz/cjwt/bysjycy/bysjydj/ |
+| `xiamen-gov` | 厦门市政府-稳岗就业 | https://www.xm.gov.cn/zdxxgk/jycy/ |
+| `xiamen-gov` | 厦门市政府-人才补贴服务 | https://www.xm.gov.cn/wsbs/ztfw/fwcj/jycy/rcbtfw/ |
+| `xiamen-gov` | 厦门市政府-技能提升补贴服务 | https://www.xm.gov.cn/wsbs/ztfw/fwcj/jycy/jntsbtfw/ |
+| `xiamen-gov` | 厦门市政府-灵活就业参保服务 | https://www.xm.gov.cn/wsbs/ztfw/fwcj/jycy/lhjycbfw/ |
+| `district-gov` | 集美区政府-创业资金申请 | https://www.jimei.gov.cn/nrrh/202309/t20230926_937426.htm |
+| `district-gov` | 海沧区政府-就业创业 | https://www.haicang.gov.cn/xx/zdxxgk/zdxxgk/jycy/ |
+| `district-gov` | 海沧区政府-毕业生就业创业补贴 | https://www.haicang.gov.cn/xx/ywdt/hcyw/jrhc/202507/t20250716_1108574.htm |
+| `district-gov` | 思明区政府-重点群体项目制培训 | https://www.siming.gov.cn/xxgk/zwgkzdgz/wgjy/jyzc/202303/t20230306_901057.htm |
+| `district-gov` | 湖里区政府-人才及重点群体住房保障 | https://www.huli.gov.cn/nrrh/202312/t20231202_1027800.htm |
+
 ## 建议的爬取顺序
 
 1. 厦门市人社局-政策法规

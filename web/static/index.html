@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>厦门政策 AI 助手</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">厦</div>
+          <div>
+            <h1>厦门政策 AI 助手</h1>
+            <p>高校毕业生就业创业政策问答</p>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="示例问题">
+          <button class="sample active" data-question="我是应届毕业生，想在厦门创业，有什么补贴？">
+            创业补贴
+          </button>
+          <button class="sample" data-question="高校毕业生在厦门就业可以申请哪些补贴？">
+            就业补贴
+          </button>
+          <button class="sample" data-question="毕业生来厦门落户和住房有什么支持？">
+            落户住房
+          </button>
+          <button class="sample" data-question="厦门有哪些职业培训补贴？">
+            职业培训
+          </button>
+        </nav>
+
+        <div class="status-panel">
+          <div class="status-row">
+            <span>模型</span>
+            <strong id="modelName">读取中</strong>
+          </div>
+          <div class="status-row">
+            <span>数据源</span>
+            <strong>MySQL policy_item</strong>
+          </div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <section class="query-panel" aria-label="政策问题输入">
+          <div class="query-head">
+            <div>
+              <h2>政策问答</h2>
+              <p>回答会先检索本地数据库，再调用大模型整理成可读解释。</p>
+            </div>
+            <label class="switch">
+              <input id="dryRun" type="checkbox" />
+              <span>只看检索</span>
+            </label>
+          </div>
+
+          <form id="askForm" class="ask-form">
+            <textarea
+              id="question"
+              rows="4"
+              placeholder="请输入你的问题，例如：我是应届毕业生，想在厦门创业，有什么补贴？"
+            >我是应届毕业生，想在厦门创业，有什么补贴？</textarea>
+
+            <div class="controls">
+              <label class="field">
+                <span>引用条数</span>
+                <input id="topK" type="number" min="1" max="10" value="3" />
+              </label>
+              <button id="submitButton" type="submit">
+                <span class="button-icon">↵</span>
+                <span>开始回答</span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="result-grid">
+          <article class="answer-panel">
+            <div class="section-title">
+              <h2>AI 回答</h2>
+              <span id="answerState">等待提问</span>
+            </div>
+            <div id="answer" class="answer empty">
+              选择一个示例问题，或者直接输入你自己的问题。
+            </div>
+          </article>
+
+          <aside class="reference-panel">
+            <div class="section-title">
+              <h2>引用依据</h2>
+              <span id="referenceCount">0 条</span>
+            </div>
+            <div id="references" class="references empty">
+              暂无引用。
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -16,6 +16,7 @@ class PolicyDocument:
     publish_date: Optional[date] = None
     summary: Optional[str] = None
     status: str = "effective"
+    document_id: Optional[int] = None
 
 
 @dataclass(frozen=True)
@@ -24,3 +25,30 @@ class PolicyLink:
     url: str
     publish_date: Optional[date] = None
     source_name: str = ""
+
+
+@dataclass(frozen=True)
+class PolicyItemCandidate:
+    item_name: str
+    category_name: str
+    target_group_text: Optional[str] = None
+    conditions_text: Optional[str] = None
+    support_content: Optional[str] = None
+    subsidy_standard: Optional[str] = None
+    application_materials: Optional[str] = None
+    application_process: Optional[str] = None
+    application_channel: Optional[str] = None
+    keywords: Optional[str] = None
+    status: str = "effective"
+    original_excerpt: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class StoredPolicyItem:
+    item_id: int
+    document_id: int
+    item_name: str
+    category_name: str
+    publish_level: Optional[str]
+    text: str
+    status: str = "effective"
