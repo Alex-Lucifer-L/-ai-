@@ -42,6 +42,7 @@ crawler/
 | `crawler/parsers/` | 页面解析逻辑，比如从 HTML 中提取标题、日期、正文 |
 | `crawler/spiders/` | 具体网站爬虫，比如厦门市人社局爬虫 |
 | `data/` | 临时保存抓取样本、调试文件或导出结果 |
+| `docs/official_sources.md` | 官方政策数据源清单和爬取优先级 |
 
 ## Suggested Workflow
 
@@ -72,4 +73,3 @@ full_text
 summary
 status
 ```
-
