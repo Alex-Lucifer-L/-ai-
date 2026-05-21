@@ -1,6 +1,7 @@
 """Common helpers for crawler code."""
 
 from datetime import date, datetime
+import re
 from typing import Optional
 
 
@@ -19,9 +20,29 @@ def clean_text(text: str) -> str:
 
 def parse_date(value: str) -> Optional[date]:
     value = value.strip()
-    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%Y年%m月%d日"):
+    patterns = (
+        (r"\d{4}-\d{1,2}-\d{1,2}", "%Y-%m-%d"),
+        (r"\d{4}/\d{1,2}/\d{1,2}", "%Y/%m/%d"),
+        (r"\d{4}年\d{1,2}月\d{1,2}日?", "%Y年%m月%d日"),
+    )
+    for pattern, fmt in patterns:
+        match = re.search(pattern, value)
+        if not match:
+            continue
+        date_text = match.group(0)
+        if "年" in date_text and not date_text.endswith("日"):
+            date_text = f"{date_text}日"
         try:
-            return datetime.strptime(value, fmt).date()
+            return datetime.strptime(date_text, fmt).date()
         except ValueError:
             continue
     return None
+
+
+def compact_spaces(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def make_summary(text: str, max_length: int = 300) -> str:
+    summary = compact_spaces(text)
+    return summary[:max_length]

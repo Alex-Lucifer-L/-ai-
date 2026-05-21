@@ -52,6 +52,47 @@ crawler/
 4. 在 `db.py` 中把结果写入 `policy_document`。
 5. 用 `source_url` 做去重，避免重复入库。
 
+## Run
+
+安装依赖：
+
+```bash
+pip install -r crawler/requirements.txt
+```
+
+先预览抓取结果，不写入数据库：
+
+```bash
+python crawler/run.py --source xiamen-hrss --max-pages 1 --max-items 5
+```
+
+只保留和毕业生就业创业更相关的结果：
+
+```bash
+python crawler/run.py --source xiamen-hrss --max-pages 1 --max-items 10 --relevant-only
+```
+
+如果只想抓列表页，不抓手动挑选的专题页：
+
+```bash
+python crawler/run.py --source xiamen-hrss --max-pages 1 --max-items 10 --skip-static
+```
+
+确认结果正常后，复制 `.env.example` 为 `.env` 并填写数据库账号密码，再写入 MySQL：
+
+```bash
+python crawler/run.py --source xiamen-hrss --max-pages 1 --max-items 5 --save
+```
+
+如果看到类似 SSL、RemoteDisconnected、Connection aborted 的错误，通常是当前网络、代理或政务网站访问策略导致的。可以先确认浏览器能否打开：
+
+```text
+https://hrss.xm.gov.cn/xxgk/zcfg/
+https://hrss.xm.gov.cn/xxgk/tzgg/
+```
+
+爬虫默认会关闭 `requests` 的环境代理，并在 HTTPS 失败时尝试 HTTP，但有些环境仍可能被目标网站断开连接。
+
 ## First Target Table
 
 第一阶段建议只写入：

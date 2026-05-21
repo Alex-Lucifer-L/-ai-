@@ -16,3 +16,11 @@ class PolicyDocument:
     publish_date: Optional[date] = None
     summary: Optional[str] = None
     status: str = "effective"
+
+
+@dataclass(frozen=True)
+class PolicyLink:
+    title: str
+    url: str
+    publish_date: Optional[date] = None
+    source_name: str = ""

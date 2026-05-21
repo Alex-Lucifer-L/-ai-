@@ -13,6 +13,19 @@
 | 厦门市教育局 | https://edu.xm.gov.cn/ | 高校毕业生政策指南、就业创业服务 | 适合补充毕业生政策汇编 |
 | 厦门市人民政府门户网站 | https://www.xm.gov.cn/ | 主题服务、人才补贴、技能补贴、政策文件 | 适合补充综合办事指南 |
 
+### 当前爬虫已接入的厦门人社局入口
+
+| 名称 | URL | 类型 |
+| --- | --- | --- |
+| 就业创业 | https://hrss.xm.gov.cn/xxgk/zfxxgkzl/zfxxgkml/qtxx/jycy/ | 列表页 |
+| 人才服务 | https://hrss.xm.gov.cn/xxgk/zfxxgkzl/zfxxgkml/qtxx/rcfw/ | 列表页 |
+| 规范性文件 | https://hrss.xm.gov.cn/xxgk/zfxxgkzl/zfxxgkml/zcfg/gfxwj/ | 列表页 |
+| 其他政策文件 | https://hrss.xm.gov.cn/xxgk/zfxxgkzl/zfxxgkml/zcfg/qtwj/ | 列表页 |
+| 通知公告 | https://hrss.xm.gov.cn/xxgk/tzgg/ | 列表页 |
+| 入厦政策 | https://app.hrss.xm.gov.cn/ggfwwt-auth/zdcypt/intoyhzc | 专题页 |
+| 毕业生入厦政策指南 | https://app.hrss.xm.gov.cn/ggfwwt-auth/mnhr/intograduate | 专题页 |
+| 优秀毕业生入厦政策 | https://app.hrss.xm.gov.cn/ggfwwt-auth/yxbyszt/intorxzc | 专题页 |
+
 ## 优先级 2：福建省级来源
 
 | 来源 | URL | 适合抓取内容 | 备注 |
